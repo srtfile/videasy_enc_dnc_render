@@ -17,7 +17,7 @@ HEADERS = {
 }
 
 ENC_DEC_API = "https://enc-dec.app/api"
-TMDB_API_KEY = os.environ.get("TMDB_API_KEY", "")
+TMDB_API_KEY = "6fad3f86b8452ee232deb7977d7dcf58"
 
 SERVERS = {
     "neon":    {"path": "mb-flix",      "label": "Neon",        "lang": "Original",   "type": "both"},
@@ -37,7 +37,7 @@ def double_encode(title: str) -> str:
     return quote(quote(title, safe=""), safe="")
 
 
-def build_url(server_key, media_type, title, year, tmdb_id, imdb_id, season="", episode=""):
+def build_url(server_key, media_type, title, year, tmdb_id, imdb_id, season="1", episode="1"):
     server = SERVERS[server_key]
     path = server["path"]
     enc_title = double_encode(title)
@@ -51,8 +51,7 @@ def build_url(server_key, media_type, title, year, tmdb_id, imdb_id, season="", 
                f"&episodeId={episode}&seasonId={season}"
                f"&tmdbId={tmdb_id}&imdbId={imdb_id}")
     if extra:
-        sep = "&" if "?" in url else "?"
-        url += sep + extra.lstrip("?&")
+        url += "&" + extra.lstrip("?&")
     return url
 
 
@@ -75,8 +74,6 @@ def fetch_and_decrypt(url, tmdb_id):
 
 
 def lookup_tmdb(tmdb_id, media_type):
-    if not TMDB_API_KEY:
-        return {}
     try:
         kind = "movie" if media_type == "movie" else "tv"
         data = requests.get(
@@ -88,82 +85,41 @@ def lookup_tmdb(tmdb_id, media_type):
         year = year_raw[:4] if year_raw else ""
         imdb = data.get("imdb_id", "")
         poster = f"https://image.tmdb.org/t/p/w200{data['poster_path']}" if data.get("poster_path") else ""
-        return {"title": title, "year": year, "imdb_id": imdb, "poster": poster}
+        seasons = data.get("number_of_seasons", 1) if media_type == "tv" else None
+        return {"title": title, "year": year, "imdb_id": imdb, "poster": poster, "seasons": seasons}
     except Exception:
         return {}
 
 
 @app.route("/")
 def index():
-    return render_template("index.html", servers=SERVERS)
+    return render_template("index.html")
 
 
-@app.route("/api/fetch", methods=["POST"])
-def api_fetch():
+@app.route("/api/resolve", methods=["POST"])
+def api_resolve():
     body = request.get_json(force=True)
+    tmdb_id    = str(body.get("tmdb_id", "")).strip()
     media_type = body.get("media_type", "movie")
-    tmdb_id    = body.get("tmdb_id", "").strip()
-    imdb_id    = body.get("imdb_id", "").strip()
-    title      = body.get("title", "").strip()
-    year       = body.get("year", "").strip()
-    season     = body.get("season", "1").strip()
-    episode    = body.get("episode", "1").strip()
-    server_key = body.get("server", "neon")
+    season     = str(body.get("season", "1")).strip()
+    episode    = str(body.get("episode", "1")).strip()
 
     if not tmdb_id:
-        return jsonify({"success": False, "error": "TMDB ID is required"}), 400
+        return jsonify({"success": False, "error": "TMDB ID required"}), 400
 
-    if not title or not year:
-        meta = lookup_tmdb(tmdb_id, media_type)
-        title   = title   or meta.get("title", "")
-        year    = year    or meta.get("year", "")
-        imdb_id = imdb_id or meta.get("imdb_id", "")
+    meta = lookup_tmdb(tmdb_id, media_type)
+    if not meta.get("title"):
+        return jsonify({"success": False, "error": "TMDB lookup failed — invalid ID?"}), 400
 
-    if not title:
-        return jsonify({"success": False, "error": "Title is required (or set TMDB_API_KEY for auto-lookup)"}), 400
-
-    if server_key not in SERVERS:
-        return jsonify({"success": False, "error": "Unknown server"}), 400
-
-    server = SERVERS[server_key]
-    if server["type"] == "movie" and media_type == "tv":
-        return jsonify({"success": False, "error": f"Server '{server['label']}' only supports movies"}), 400
-
-    url = build_url(server_key, media_type, title, year, tmdb_id, imdb_id, season, episode)
-    result = fetch_and_decrypt(url, tmdb_id)
-    result["source_url"] = url
-    result["server"] = server["label"]
-    result["lang"]   = server["lang"]
-    return jsonify(result)
-
-
-@app.route("/api/fetch-all", methods=["POST"])
-def api_fetch_all():
-    body = request.get_json(force=True)
-    media_type = body.get("media_type", "movie")
-    tmdb_id    = body.get("tmdb_id", "").strip()
-    imdb_id    = body.get("imdb_id", "").strip()
-    title      = body.get("title", "").strip()
-    year       = body.get("year", "").strip()
-    season     = body.get("season", "1").strip()
-    episode    = body.get("episode", "1").strip()
-
-    if not tmdb_id:
-        return jsonify({"success": False, "error": "TMDB ID is required"}), 400
-
-    if not title or not year:
-        meta = lookup_tmdb(tmdb_id, media_type)
-        title   = title   or meta.get("title", "")
-        year    = year    or meta.get("year", "")
-        imdb_id = imdb_id or meta.get("imdb_id", "")
-
-    if not title:
-        return jsonify({"success": False, "error": "Title is required (or set TMDB_API_KEY for auto-lookup)"}), 400
+    title   = meta["title"]
+    year    = meta["year"]
+    imdb_id = meta.get("imdb_id", "")
 
     results = {}
     for key, server in SERVERS.items():
         if server["type"] == "movie" and media_type == "tv":
-            results[key] = {"success": False, "error": "Movie-only server", "server": server["label"], "lang": server["lang"]}
+            results[key] = {"success": False, "error": "Movie-only server",
+                            "server": server["label"], "lang": server["lang"]}
             continue
         url = build_url(key, media_type, title, year, tmdb_id, imdb_id, season, episode)
         r = fetch_and_decrypt(url, tmdb_id)
@@ -172,7 +128,11 @@ def api_fetch_all():
         r["lang"]   = server["lang"]
         results[key] = r
 
-    return jsonify({"success": True, "results": results})
+    return jsonify({
+        "success": True,
+        "meta": {"title": title, "year": year, "poster": meta.get("poster",""), "imdb_id": imdb_id},
+        "results": results
+    })
 
 
 if __name__ == "__main__":
