@@ -13,58 +13,61 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; font-size: 14px; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 32px 16px 64px; }
   header { width: 100%; max-width: 700px; display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
-  header h1 { font-size: 20px; font-weight: 700; }
-  header small { color: var(--muted); margin-left: auto; }
   .logo { width: 34px; height: 34px; background: linear-gradient(135deg,#6c8ef5,#a78bfa); border-radius: 9px; display:flex; align-items:center; justify-content:center; font-size:16px; }
+  header h1 { font-size: 20px; font-weight: 700; }
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; width: 100%; max-width: 700px; margin-bottom: 14px; }
   .card h2 { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+  .toggle { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tbtn { flex:1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); color: var(--muted); font-size: 13px; padding: 8px; cursor: pointer; font-family: inherit; }
+  .tbtn.on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
   .row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
   .row > * { flex: 1 1 150px; }
   label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-  input, select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); font-size: 13px; padding: 8px 10px; outline: none; font-family: inherit; }
-  input:focus, select:focus { border-color: var(--accent); }
+  input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); color: var(--text); font-size: 13px; padding: 8px 10px; outline: none; font-family: inherit; }
+  input:focus { border-color: var(--accent); }
   input::placeholder { color: var(--muted); }
-  .toggle { display: flex; gap: 8px; margin-bottom: 12px; }
-  .tbtn { flex:1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); color: var(--muted); font-size: 13px; padding: 8px; cursor: pointer; font-family: inherit; }
-  .tbtn.on { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
-  .sgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: 8px; margin-bottom: 14px; }
-  .schip { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 8px 10px; cursor: pointer; }
-  .schip:hover { border-color: var(--accent); }
-  .schip.on { border-color: var(--accent); background: rgba(108,142,245,.1); }
-  .schip .sn { font-size: 13px; font-weight: 600; }
-  .schip .sl { font-size: 11px; color: var(--muted); }
-  .schip.all .sn { color: var(--accent); }
+  #tv { display: none; }
   .btn { width: 100%; background: linear-gradient(135deg,#6c8ef5,#a78bfa); border: none; border-radius: var(--r); color: #fff; font-size: 14px; font-weight: 700; padding: 11px; cursor: pointer; font-family: inherit; }
   .btn:hover { opacity: .88; }
-  #tv { display: none; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
 
-  /* results */
-  .rblock { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; }
-  .rhead { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
-  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .ok { background: var(--success); } .err { background: var(--error); }
-  .rtitle { font-weight: 600; font-size: 13px; }
-  .rlang { font-size: 11px; color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; margin-left: auto; }
-  .rbody { padding: 14px 16px; }
-  .sentry { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 10px 12px; margin-bottom: 8px; }
-  .stop { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
-  .squal { font-size: 11px; font-weight: 700; color: var(--accent); background: rgba(108,142,245,.12); border-radius: 4px; padding: 2px 6px; }
-  .stype { font-size: 11px; color: var(--muted); }
-  .surl { font-family: monospace; font-size: 11px; color: var(--muted); word-break: break-all; margin-bottom: 6px; }
-  .acts { display: flex; gap: 6px; }
-  .mbtn { font-size: 11px; padding: 4px 10px; border-radius: 5px; border: none; cursor: pointer; font-family: inherit; font-weight: 600; }
-  .cp { background: var(--border); color: var(--text); }
-  .op { background: var(--accent); color: #fff; }
-  .errmsg { font-size: 12px; color: var(--error); }
-  .srcurl { font-family: monospace; font-size: 10px; color: var(--muted); word-break: break-all; margin-top: 8px; }
-  .subtoggle { font-size: 12px; color: var(--accent); cursor: pointer; margin-top: 10px; display: inline-block; }
-  .sublist { display: none; margin-top: 8px; }
-  .subrow { font-size: 12px; color: var(--muted); padding: 3px 0; display: flex; gap: 8px; }
-  .sublang { color: var(--text); font-weight: 600; min-width: 90px; }
-  #spinner { display:none; text-align:center; color:var(--muted); padding:20px; }
+  /* meta bar */
+  #metabar { display:none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; width:100%; max-width:700px; margin-bottom:14px; display:none; align-items:center; gap:14px; }
+  #metabar img { width:48px; border-radius:4px; flex-shrink:0; }
+  #metabar .mtitle { font-weight:700; font-size:15px; }
+  #metabar .myear { color:var(--muted); font-size:13px; }
+
+  /* spinner */
+  #spinner { display:none; text-align:center; color:var(--muted); padding:24px; width:100%; max-width:700px; }
   .spin { display:inline-block; width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:sp .7s linear infinite; vertical-align:middle; margin-right:8px; }
   @keyframes sp { to{transform:rotate(360deg)} }
-  @media(max-width:480px){ .row>*{flex:1 1 100%} .sgrid{grid-template-columns:repeat(3,1fr)} }
+
+  /* results */
+  #results { width:100%; max-width:700px; }
+  .rblock { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; }
+  .rhead { display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--border); }
+  .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .ok { background:var(--success); } .er { background:var(--error); }
+  .rtitle { font-weight:600; font-size:13px; }
+  .rlang { font-size:11px; color:var(--muted); background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:2px 6px; margin-left:auto; }
+  .rbody { padding:14px 16px; }
+  .sentry { background:var(--bg); border:1px solid var(--border); border-radius:var(--r); padding:10px 12px; margin-bottom:8px; }
+  .sentry:last-child { margin-bottom:0; }
+  .stop { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px; }
+  .squal { font-size:11px; font-weight:700; color:var(--accent); background:rgba(108,142,245,.12); border-radius:4px; padding:2px 6px; }
+  .stype { font-size:11px; color:var(--muted); }
+  .surl { font-family:monospace; font-size:11px; color:var(--muted); word-break:break-all; margin-bottom:6px; }
+  .acts { display:flex; gap:6px; }
+  .mbtn { font-size:11px; padding:4px 10px; border-radius:5px; border:none; cursor:pointer; font-family:inherit; font-weight:600; }
+  .cp { background:var(--border); color:var(--text); }
+  .op { background:var(--accent); color:#fff; }
+  .errmsg { font-size:12px; color:var(--error); }
+  .srcurl { font-family:monospace; font-size:10px; color:var(--muted); word-break:break-all; margin-top:8px; }
+  .subtoggle { font-size:12px; color:var(--accent); cursor:pointer; margin-top:10px; display:inline-block; }
+  .sublist { display:none; margin-top:8px; }
+  .subrow { font-size:12px; color:var(--muted); padding:3px 0; display:flex; gap:8px; }
+  .sublang { color:var(--text); font-weight:600; min-width:90px; }
+  @media(max-width:480px){ .row>*{flex:1 1 100%} }
 </style>
 </head>
 <body>
@@ -72,22 +75,16 @@
 <header>
   <div class="logo">▶</div>
   <h1>Videasy Resolver</h1>
-  <small>enc-dec.app backend</small>
 </header>
 
 <div class="card">
-  <h2>Media</h2>
+  <h2>Lookup</h2>
   <div class="toggle">
     <button class="tbtn on" onclick="setType('movie',this)">Movie</button>
     <button class="tbtn" onclick="setType('tv',this)">TV Show</button>
   </div>
   <div class="row">
-    <div><label>TMDB ID *</label><input id="tmdb_id" placeholder="e.g. 550" type="number"></div>
-    <div><label>IMDB ID</label><input id="imdb_id" placeholder="e.g. tt0137523"></div>
-  </div>
-  <div class="row">
-    <div><label>Title *</label><input id="title" placeholder="e.g. Fight Club"></div>
-    <div><label>Year *</label><input id="year" placeholder="e.g. 1999" type="number"></div>
+    <div><label>TMDB ID</label><input id="tmdb_id" placeholder="e.g. 550" type="number"></div>
   </div>
   <div id="tv">
     <div class="row">
@@ -95,45 +92,22 @@
       <div><label>Episode</label><input id="episode" value="1" type="number"></div>
     </div>
   </div>
+  <button class="btn" id="fetchbtn" onclick="doFetch()">Resolve All Servers</button>
 </div>
 
-<div class="card">
-  <h2>Server</h2>
-  <div class="sgrid" id="sgrid"></div>
-  <button class="btn" onclick="doFetch()">Resolve Streams</button>
+<div id="metabar">
+  <img id="metaposter" src="" alt="">
+  <div>
+    <div class="mtitle" id="metatitle"></div>
+    <div class="myear" id="metayear"></div>
+  </div>
 </div>
 
-<div id="spinner"><span class="spin"></span> Fetching &amp; decrypting…</div>
+<div id="spinner"><span class="spin"></span> Fetching &amp; decrypting all servers…</div>
 <div id="results"></div>
 
 <script>
-const SERVERS = {{ servers | tojson }};
 let mediaType = "movie";
-let selServer = "neon";
-
-// build chips
-const grid = document.getElementById("sgrid");
-// "All" chip first
-const allChip = document.createElement("div");
-allChip.className = "schip all";
-allChip.dataset.k = "all";
-allChip.innerHTML = `<div class="sn">All Servers</div>`;
-allChip.onclick = () => pick("all");
-grid.appendChild(allChip);
-
-for (const [k, s] of Object.entries(SERVERS)) {
-  const c = document.createElement("div");
-  c.className = "schip" + (k === selServer ? " on" : "");
-  c.dataset.k = k;
-  c.innerHTML = `<div class="sn">${s.label}</div><div class="sl">${s.lang}</div>`;
-  c.onclick = () => pick(k);
-  grid.appendChild(c);
-}
-
-function pick(k) {
-  selServer = k;
-  document.querySelectorAll(".schip").forEach(c => c.classList.toggle("on", c.dataset.k === k));
-}
 
 function setType(t, btn) {
   mediaType = t;
@@ -147,21 +121,20 @@ function esc(s) {
 }
 
 function renderBlock(key, result) {
-  const s = key !== "all" ? SERVERS[key] : null;
-  const label = result.server || (s && s.label) || key;
-  const lang  = result.lang  || (s && s.lang)  || "";
+  const label = result.server || key;
+  const lang  = result.lang  || "";
   const ok    = result.success;
 
   let html = `<div class="rblock">
     <div class="rhead">
-      <span class="dot ${ok?'ok':'err'}"></span>
+      <span class="dot ${ok?'ok':'er'}"></span>
       <span class="rtitle">${esc(label)}</span>
       ${lang ? `<span class="rlang">${esc(lang)}</span>` : ""}
     </div>
     <div class="rbody">`;
 
   if (!ok) {
-    html += `<div class="errmsg">✗ ${esc(result.error || "Unknown error")}</div>`;
+    html += `<div class="errmsg">✗ ${esc(result.error||"Unknown error")}</div>`;
   } else {
     const d = result.data || {};
     const sources = d.sources || d.streams || (d.stream ? [d.stream] : []);
@@ -172,19 +145,19 @@ function renderBlock(key, result) {
       html += `<details style="margin-top:8px"><summary style="font-size:11px;color:var(--muted);cursor:pointer">Raw</summary><pre style="font-size:10px;color:var(--muted);overflow:auto;max-height:180px;margin-top:6px">${esc(JSON.stringify(d,null,2))}</pre></details>`;
     } else {
       sources.forEach(src => {
-        const url = src.url || src.file || src.src || (typeof src==="string"?src:"");
-        const quality = src.quality || src.label || src.resolution || "";
-        const type = src.type || "hls";
+        const url = src.url||src.file||src.src||(typeof src==="string"?src:"");
+        const quality = src.quality||src.label||src.resolution||"";
+        const type = src.type||"hls";
         if (!url) return;
         html += `<div class="sentry">
           <div class="stop">
-            ${quality ? `<span class="squal">${esc(quality)}</span>` : ""}
+            ${quality?`<span class="squal">${esc(quality)}</span>`:""}
             <span class="stype">${esc(type)}</span>
           </div>
           <div class="surl">${esc(url)}</div>
           <div class="acts">
-            <button class="mbtn cp" onclick="cp('${url.replace(/'/g,"\\'")}',this)">Copy</button>
-            <button class="mbtn op" onclick="window.open('${url.replace(/'/g,"\\'")}','_blank')">Open</button>
+            <button class="mbtn cp" onclick="cp(this,'${url.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">Copy</button>
+            <button class="mbtn op" onclick="window.open('${url.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}','_blank')">Open</button>
           </div>
         </div>`;
       });
@@ -192,15 +165,14 @@ function renderBlock(key, result) {
         html += `<span class="subtoggle" onclick="toggleSubs(this)">▸ ${subs.length} subtitle${subs.length>1?"s":""}</span>`;
         html += `<div class="sublist">`;
         subs.forEach(sub => {
-          const lang2 = sub.label||sub.lang||sub.language||"?";
+          const l = sub.label||sub.lang||sub.language||"?";
           const u = sub.url||sub.file||"";
-          html += `<div class="subrow"><span class="sublang">${esc(lang2)}</span>${u?`<a href="${esc(u)}" target="_blank" style="color:var(--accent);font-size:11px">Download</a>`:""}</div>`;
+          html += `<div class="subrow"><span class="sublang">${esc(l)}</span>${u?`<a href="${esc(u)}" target="_blank" style="color:var(--accent);font-size:11px">Download</a>`:""}</div>`;
         });
         html += `</div>`;
       }
     }
   }
-
   if (result.source_url) html += `<div class="srcurl">↗ ${esc(result.source_url)}</div>`;
   html += `</div></div>`;
   return html;
@@ -213,7 +185,7 @@ function toggleSubs(el) {
   el.textContent = (open?"▸":"▾") + el.textContent.slice(1);
 }
 
-function cp(url, btn) {
+function cp(btn, url) {
   navigator.clipboard.writeText(url).then(() => {
     const o = btn.textContent; btn.textContent="Copied!";
     setTimeout(()=>btn.textContent=o, 1500);
@@ -221,47 +193,56 @@ function cp(url, btn) {
 }
 
 async function doFetch() {
-  const body = {
-    media_type: mediaType,
-    tmdb_id:  document.getElementById("tmdb_id").value.trim(),
-    imdb_id:  document.getElementById("imdb_id").value.trim(),
-    title:    document.getElementById("title").value.trim(),
-    year:     document.getElementById("year").value.trim(),
-    season:   document.getElementById("season")?.value||"1",
-    episode:  document.getElementById("episode")?.value||"1",
-    server:   selServer === "all" ? "neon" : selServer,
-  };
+  const tmdb_id = document.getElementById("tmdb_id").value.trim();
+  if (!tmdb_id) { alert("Enter a TMDB ID"); return; }
 
-  if (!body.tmdb_id) { alert("TMDB ID required"); return; }
-  if (!body.title)   { alert("Title required"); return; }
-  if (!body.year)    { alert("Year required"); return; }
-
+  const btn = document.getElementById("fetchbtn");
+  btn.disabled = true;
   document.getElementById("results").innerHTML = "";
+  document.getElementById("metabar").style.display = "none";
   document.getElementById("spinner").style.display = "block";
 
-  const endpoint = selServer === "all" ? "/api/fetch-all" : "/api/fetch";
-  if (selServer === "all") delete body.server;
-
   try {
-    const r = await fetch(endpoint, {
+    const r = await fetch("/api/resolve", {
       method: "POST",
       headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        tmdb_id,
+        media_type: mediaType,
+        season:  document.getElementById("season")?.value || "1",
+        episode: document.getElementById("episode")?.value || "1",
+      })
     });
     const data = await r.json();
     document.getElementById("spinner").style.display = "none";
-    const out = document.getElementById("results");
 
-    if (endpoint === "/api/fetch-all") {
-      for (const [k, res] of Object.entries(data.results || {})) {
-        out.insertAdjacentHTML("beforeend", renderBlock(k, res));
-      }
-    } else {
-      out.insertAdjacentHTML("beforeend", renderBlock(selServer, data));
+    if (!data.success) {
+      document.getElementById("results").innerHTML =
+        `<div class="rblock"><div class="rbody"><div class="errmsg">✗ ${esc(data.error)}</div></div></div>`;
+      return;
+    }
+
+    // show meta
+    const meta = data.meta || {};
+    if (meta.title) {
+      document.getElementById("metatitle").textContent = meta.title;
+      document.getElementById("metayear").textContent = meta.year || "";
+      const img = document.getElementById("metaposter");
+      if (meta.poster) { img.src = meta.poster; img.style.display=""; }
+      else img.style.display="none";
+      document.getElementById("metabar").style.display = "flex";
+    }
+
+    const out = document.getElementById("results");
+    for (const [k, res] of Object.entries(data.results || {})) {
+      out.insertAdjacentHTML("beforeend", renderBlock(k, res));
     }
   } catch(e) {
     document.getElementById("spinner").style.display = "none";
-    document.getElementById("results").innerHTML = `<div class="rblock"><div class="rbody"><div class="errmsg">Request failed: ${esc(e.message)}</div></div></div>`;
+    document.getElementById("results").innerHTML =
+      `<div class="rblock"><div class="rbody"><div class="errmsg">Request failed: ${esc(e.message)}</div></div></div>`;
+  } finally {
+    btn.disabled = false;
   }
 }
 </script>
